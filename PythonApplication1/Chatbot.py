@@ -18,4 +18,8 @@ def F_INTRO():
     print("Hallo")
     print("Ihre Eingabe war:", user_input)
 
+def F_THEMEN():
+    print("THEMEN:")
+
+
 F_MAIN()
