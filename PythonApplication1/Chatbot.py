@@ -23,6 +23,7 @@ def F_INTRO():
 def F_THEMEN():
     print("THEMEN:")
     print(user_input)
-
+    
+    newTicket = ticket("Brian Lemke", "brian.lemke@mail.de", "017777777777", "10-12", "Hallo meine Maus geht nicht mehr. Ich brauch bitte eine neue Maus, danke!")
     
 F_MAIN()
