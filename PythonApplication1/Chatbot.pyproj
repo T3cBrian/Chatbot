@@ -23,7 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Chatbot.py" />
-    <Compile Include="class1.py">
+    <Compile Include="ticket.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

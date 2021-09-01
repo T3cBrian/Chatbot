@@ -1,8 +1,8 @@
-
-
 def F_MAIN():
     F_INTRO()
-
+    F_THEMEN()
+    
+user_input = ""
 
 def F_INTRO():
     print("Hallo und Wilkommen bei der IT Soulution")
@@ -11,15 +11,18 @@ def F_INTRO():
     print("Folgende Themenbereiche stehen zur Auswahl:")
     print("")
 
-    user_input = ""
+    global user_input
 
-    user_input = input()
+    user_input = input("Hier tippen")
 
     print("Hallo")
     print("Ihre Eingabe war:", user_input)
 
+    
+
 def F_THEMEN():
     print("THEMEN:")
+    print(user_input)
 
     
 F_MAIN()
