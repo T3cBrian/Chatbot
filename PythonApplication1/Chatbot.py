@@ -3,7 +3,9 @@ def F_MAIN():
     F_INTRO()
     #
     F_THEMEN_ABFRAGE()
-    
+    F_TICKET_INFOS()
+
+
 list_themenbereiche = [ "Technische Störung", "Fragen zu Dienstleistungen", "Änderungen im Zusammenhang mit einer Software", "Sonstige Probleme" ]
 
 
@@ -51,15 +53,19 @@ def F_THEMEN_ABFRAGE():
         counter+=1
       
       if hit != True:
+        counter = 1
         for current_list_position in list_themenbereiche:
 
           # beide Variablen klein schreiben, um sie case sensitive vergleichen zu können ( BITTE != bitte )
           current_list_position = current_list_position.lower()
           user_input_lower = user_input.lower()
-
+          
           if user_input_lower == current_list_position:
             hit = True
+            # Setzen von user_input auf den entsprechenden String
+            user_input = list_themenbereiche[counter-1]
             break
+          counter+=1
       else:
         break
 
@@ -73,14 +79,32 @@ def F_THEMEN_ABFRAGE():
         print("Sie haben mehrfach Fehlerhafte Eingaben getätigt! Bitte versuchen Sie es später erneut.")
         exit()
 
-
     print("")
-
     print("Ihre Eingabe war:", user_input)
-
-    print("THEMEN:")
-    print(user_input)
     
-    #newTicket = ticket("Brian Lemke", "brian.lemke@mail.de", "017777777777", "10-12", "Hallo meine Maus geht nicht mehr. Ich brauch bitte eine neue Maus, danke!")
+def F_TICKET_INFOS():
+  user_name = ""
+  user_email = ""
+  user_number = ""
+  user_availability = ""
+  user_describtion = ""
+    
+  print("Wir benötigen noch ein paar Informationen für die Erstellung des Tickets")
+
+  # \t => einrückung
+  user_name = input("Ihren Namen: \t \t \t \t")
+  user_email = input("Ihre Email-Adresse: \t \t")
+  user_number = input("Ihre Telefonnummer: \t \t")
+  user_availability = input("Ihre Erreichbarkeit: \t \t")
+  user_describtion = input("Ihre Fehlerbeschreibung: \t")
+
+  #newTicket = ticket( user_name, user_email, user_number, user_availability, user_describtion)
+
+  print("Ihr Ticket wurde aufgenommen. Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
+
     
 F_MAIN()
+
+
+# Objekt vom Typ Ticket erstellen => just for fun
+#newTicket = ticket("Brian Lemke", "brian.lemke@mail.de", "017777777777", "10-12", "Hallo meine Maus geht nicht mehr. Ich brauch bitte eine neue Maus, danke!")
