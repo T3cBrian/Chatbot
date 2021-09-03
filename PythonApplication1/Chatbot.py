@@ -89,20 +89,75 @@ def F_TICKET_INFOS():
   user_availability = ""
   user_describtion = ""
     
+  print("")  
   print("Wir benötigen noch ein paar Informationen für die Erstellung des Tickets")
 
-  # \t => einrückung
-  user_name = input("Ihren Namen: \t \t \t \t")
-  user_email = input("Ihre Email-Adresse: \t \t")
-  user_number = input("Ihre Telefonnummer: \t \t")
-  user_availability = input("Ihre Erreichbarkeit: \t \t")
-  user_describtion = input("Ihre Fehlerbeschreibung: \t")
+  #User-Name Abfrage und Prüfung
+  while user_name == "":
+
+    # \t => Einrückungen
+    user_name = input("Ihren Namen: \t \t \t \t")
+
+    if user_name == "":
+      print("Sie haben kein Namen eingegeben!")
+
+    if F_CHECK_FOR_DIGITS(user_name) == True:
+      print("Der Name enthält Zahlen!")
+      user_name = ""
+  
+  #User-Email Abfrage und Prüfung
+  while user_email == "":
+
+    user_email = input("Ihre E-Mail-Adresse: \t \t")
+
+    if user_email == "":
+      print("Sie haben keine E-Mail-Adresse angegeben!")
+
+    if "@" not in user_email:
+      print("Die E-Mail-Adresse ist nicht gültig!")
+      user_email = ""
+
+
+  #User-Nummer Abfrage und Prüfung
+  while user_number == "":
+
+    user_number = input("Ihre Telefonnummer: \t \t")
+
+    if user_number == "":
+      print("Sie haben keine Nummer eingegeben!")
+
+    if user_number.isdigit() == False:
+      print("Die Nummer darf nur Zahlen enthalten!")
+      user_number = ""
+  
+
+  #User-Verfügbarkeit Abfrage und Prüfung
+  while user_availability == "":
+
+    user_availability = input("Ihre Erreichbarkeit: \t \t")
+
+    if user_availability == "":
+      print("Sie haben keine Erreichbarkeit eingegeben!")
+
+
+  #User-Fehlerbeschreibung Abfrage und Prüfung
+  while user_describtion == "":
+
+    user_describtion = input("Ihre Fehlerbeschreibung: \t")
+
+    if user_describtion == "":
+      print("Sie haben keine Fehlerbeschreibung eingegeben!")
+
 
   #newTicket = ticket( user_name, user_email, user_number, user_availability, user_describtion)
 
   print("Ihr Ticket wurde aufgenommen. Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
 
-    
+
+def F_CHECK_FOR_DIGITS(inputString):
+  return any(current_char.isdigit() for current_char in inputString)
+
+
 F_MAIN()
 
 
