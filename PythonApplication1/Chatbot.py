@@ -1,9 +1,16 @@
+# Imports
+import sys
+import mariadb
+
+
+# Main Method, wich controll everthing
 def F_MAIN():
     # macht die Begrüßung und die erste Abfrage beim User
     F_INTRO()
     #
-    F_THEMEN_ABFRAGE()
-    F_TICKET_INFOS()
+    #F_THEMEN_ABFRAGE()
+    #F_TICKET_INFOS()
+    F_WRITE_TO_DATABASE()
 
 
 list_themenbereiche = [ "Technische Störung", "Fragen zu Dienstleistungen", "Änderungen im Zusammenhang mit einer Software", "Sonstige Probleme" ]
@@ -157,6 +164,32 @@ def F_TICKET_INFOS():
 def F_CHECK_FOR_DIGITS(inputString):
   return any(current_char.isdigit() for current_char in inputString)
 
+
+def F_WRITE_TO_DATABASE():
+    print("Ich versuche einen DB Connect")
+
+    # Connect to MariaDB Platform
+    try:
+        conn = mariadb.connect(
+            user="root",
+            password="root",
+            host="127.0.0.1",
+            port=3306,
+            database="chatbot"
+
+        )
+    except mariadb.Error as e:
+        print(f"Error connecting to MariaDB Platform: {e}")
+        sys.exit(1)
+
+    # Get Cursor
+    cur = conn.cursor()
+
+
+    cur.execute("Select TicketNumber, UserName from tickets")
+
+    for (TicketNumber, UserName) in cur:
+        print(f"Ticket Nummer: {TicketNumber}, User Name: {UserName}")
 
 F_MAIN()
 
