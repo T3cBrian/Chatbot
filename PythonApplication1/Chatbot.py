@@ -1,6 +1,7 @@
 # Imports
 import sys
 import mariadb
+from datetime import date
 
 
 # Main Method, wich controll everthing
@@ -166,7 +167,7 @@ def F_CHECK_FOR_DIGITS(inputString):
 
 
 def F_WRITE_TO_DATABASE():
-    print("Ich versuche einen DB Connect")
+    print("Ticket wird erstellt.")
 
     # Connect to MariaDB Platform
     try:
@@ -185,11 +186,16 @@ def F_WRITE_TO_DATABASE():
     # Get Cursor
     cur = conn.cursor()
 
+    cur.execute("Insert into tickets (UserName, UserEmail, UserTelephonenumber, UserAvailibility, UserDescribtion) values #(user_name, user_email, user_number, user_availability, user_describtion)")
 
-    cur.execute("Select TicketNumber, UserName from tickets")
+    today = date.today()
 
+    print(today)
+
+    cur.execute("Select TicketNumber, UserName from tickets where creationdate like '' ")
     for (TicketNumber, UserName) in cur:
-        print(f"Ticket Nummer: {TicketNumber}, User Name: {UserName}")
+        print("Ich Ticket wurde unter folgender Ticketnummer erstellt.")
+        print(f"Ticket Nummer: {TicketNumber}")
 
 F_MAIN()
 
