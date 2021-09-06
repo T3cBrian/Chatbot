@@ -1,17 +1,15 @@
 # Imports
 import sys
 import mariadb
-from datetime import date
-
 
 # Main Method, wich controll everthing
 def F_MAIN():
     # macht die Begrüßung und die erste Abfrage beim User
     F_INTRO()
     #
-    #F_THEMEN_ABFRAGE()
-    #F_TICKET_INFOS()
-    F_WRITE_TO_DATABASE()
+    F_THEMEN_ABFRAGE()
+    F_TICKET_INFOS()
+    
 
 
 list_themenbereiche = [ "Technische Störung", "Fragen zu Dienstleistungen", "Änderungen im Zusammenhang mit einer Software", "Sonstige Probleme" ]
@@ -85,7 +83,7 @@ def F_THEMEN_ABFRAGE():
 
       if error_counter > 3:
         print("Sie haben mehrfach Fehlerhafte Eingaben getätigt! Bitte versuchen Sie es später erneut.")
-        exit()
+        sys.exit(1)
 
     print("")
     print("Ihre Eingabe war:", user_input)
@@ -104,7 +102,7 @@ def F_TICKET_INFOS():
   while user_name == "":
 
     # \t => Einrückungen
-    user_name = input("Ihren Namen: \t \t \t \t")
+    user_name = input("Ihren Namen: \t \t \t")
 
     if user_name == "":
       print("Sie haben kein Namen eingegeben!")
@@ -157,18 +155,19 @@ def F_TICKET_INFOS():
       print("Sie haben keine Fehlerbeschreibung eingegeben!")
 
 
-  #newTicket = ticket( user_name, user_email, user_number, user_availability, user_describtion)
+  F_WRITE_TO_DATABASE(user_name, user_email, user_number, user_availability, user_describtion)
 
-  print("Ihr Ticket wurde aufgenommen. Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
+  print("Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
+  print("Wir wünschen Ihnen noch einen schönen Tag.")
+  print("")
 
 
 def F_CHECK_FOR_DIGITS(inputString):
   return any(current_char.isdigit() for current_char in inputString)
 
 
-def F_WRITE_TO_DATABASE():
-    print("Ticket wird erstellt.")
-
+def F_WRITE_TO_DATABASE(UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion):
+    
     # Connect to MariaDB Platform
     try:
         conn = mariadb.connect(
@@ -185,20 +184,24 @@ def F_WRITE_TO_DATABASE():
 
     # Get Cursor
     cur = conn.cursor()
+    
+    try:
+        cur.execute("Insert into tickets (UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion) values (?, ?, ?, ?, ?)" , (UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion) )
+    except mariadb.Error as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
-    cur.execute("Insert into tickets (UserName, UserEmail, UserTelephonenumber, UserAvailibility, UserDescribtion) values #(user_name, user_email, user_number, user_availability, user_describtion)")
 
-    today = date.today()
+    conn.commit()
 
-    print(today)
+    print("")
+    print("Ich Ticket wurde unter folgender Ticket-Nummer erstellt.")
+    print(f"Ticket-Nummer: {cur.lastrowid}")
+    print("")
 
-    cur.execute("Select TicketNumber, UserName from tickets where creationdate like '' ")
-    for (TicketNumber, UserName) in cur:
-        print("Ich Ticket wurde unter folgender Ticketnummer erstellt.")
-        print(f"Ticket Nummer: {TicketNumber}")
+    #cur.execute("Select TicketNumber, UserName from tickets where creationdate like '' ")
+    #for (TicketNumber, UserName) in cur:
+        
+        #print(f"Ticket Nummer: {TicketNumber}")
 
 F_MAIN()
-
-
-# Objekt vom Typ Ticket erstellen => just for fun
-#newTicket = ticket("Brian Lemke", "brian.lemke@mail.de", "017777777777", "10-12", "Hallo meine Maus geht nicht mehr. Ich brauch bitte eine neue Maus, danke!")
