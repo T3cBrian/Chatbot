@@ -2,12 +2,18 @@
 import sys
 import mariadb
 
-# Main Method, wich controll everthing
+# Main Method, which controll everthing
 def F_MAIN():
     # macht die Begrüßung und die erste Abfrage beim User
     F_INTRO()
-    #
+
+    # fragt nach dem groben Themen Bereich
     F_THEMEN_ABFRAGE()
+
+    # sucht nach dem Themen
+    F_
+
+    # holt sich die Ticket Informationen vom User
     F_TICKET_INFOS()
     
 
@@ -27,8 +33,7 @@ def F_INTRO():
 
     # vgl. for i in 1 2 3 4:
     for current_list_position in list_themenbereiche:
-      # {}. {}".format(x ,y) => formatiert die Ausgabe, da wir andernfalls Leerzeichen nach den Variablen haben
-      print("\t {}. {}".format(counter, current_list_position) )
+      print(f"\t {counter}. {current_list_position}")
 
       # counter+=1 => counter = counter + 1
       counter+=1
@@ -155,7 +160,7 @@ def F_TICKET_INFOS():
       print("Sie haben keine Fehlerbeschreibung eingegeben!")
 
 
-  F_WRITE_TO_DATABASE(user_name, user_email, user_number, user_availability, user_describtion)
+  #F_WRITE_TO_DATABASE(user_name, user_email, user_number, user_availability, user_describtion)
 
   print("Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
   print("Wir wünschen Ihnen noch einen schönen Tag.")
@@ -168,22 +173,7 @@ def F_CHECK_FOR_DIGITS(inputString):
 
 def F_WRITE_TO_DATABASE(UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion):
     
-    # Connect to MariaDB Platform
-    try:
-        conn = mariadb.connect(
-            user="root",
-            password="root",
-            host="127.0.0.1",
-            port=3306,
-            database="chatbot"
-
-        )
-    except mariadb.Error as e:
-        print(f"Error connecting to MariaDB Platform: {e}")
-        sys.exit(1)
-
-    # Get Cursor
-    cur = conn.cursor()
+    
     
     try:
         cur.execute("Insert into tickets (UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion) values (?, ?, ?, ?, ?)" , (UserName, UserEmail, UserTelephonenumber, UserAvailability, UserDescribtion) )
@@ -203,5 +193,24 @@ def F_WRITE_TO_DATABASE(UserName, UserEmail, UserTelephonenumber, UserAvailabili
     #for (TicketNumber, UserName) in cur:
         
         #print(f"Ticket Nummer: {TicketNumber}")
+
+def F_DB_CONNECT():
+  # Connect to MariaDB Platform
+    try:
+        conn = mariadb.connect(
+            user="root",
+            password="root",
+            host="127.0.0.1",
+            port=3306,
+            database="chatbot"
+
+        )
+    except mariadb.Error as e:
+        print(f"Error connecting to MariaDB Platform: {e}")
+        sys.exit(1)
+
+    # Get Cursor
+    global cur = conn.cursor()
+
 
 F_MAIN()
