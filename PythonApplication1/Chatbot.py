@@ -104,7 +104,7 @@ def F_THEMEN_ABFRAGE():
 
 def F_FIND_SOLUTION():
     print("")
-    print("Sie können diesen Bereich jederzeit mit dem Befehl \"!bye\" verlassen")
+    print("Sie können diesen Bereich jederzeit mit dem Befehl \"!bye\" verlassen oder mit dem Befehl \"!restart\" den Themenbereich neu auswählen.")
 
     user_input_problem = ""
 
@@ -113,9 +113,15 @@ def F_FIND_SOLUTION():
 
         if user_input_problem == "!bye":
             F_EXIT()
+            break
         if user_input_problem == "!TS":
             F_TICKET_SEARCH()
             user_input_problem = ""
+            continue
+        if user_input_problem == "!restart":
+            F_THEMEN_ABFRAGE()
+            user_input_problem = ""
+            continue
 
         if user_input_themenbereich_nr != "4":
 
@@ -148,11 +154,21 @@ def F_FIND_SOLUTION():
                 while checker == "error":
                     checker = input("Hat diese Antwort Ihr Problem gelöst? [j/n] ")
 
-                    if checker != "j" && checker != "J" && checker != "n" && checker != "N":
-                        checker = "error"
-                    elif checker == "J" || checker == "j":
+                    if checker == "J" or checker == "j":
+                        checker = "break"
+                        break
+                    elif checker == "!bye":
                         F_EXIT()
+                    elif checker == "!TS":
+                        F_TICKET_SEARCH()
+                        checker = "break"
+                        break
+                    elif checker != "j" and checker != "J" and checker != "n" and checker != "N":
+                        checker = "error"
 
+                if checker == "break":
+                    user_input_problem = ""
+                    break
 
         else:
             print("XXX")
@@ -188,7 +204,7 @@ def F_TICKET_INFOS():
     user_describtion = ""
     
     print("")  
-    print("Wir benötigen noch ein paar Informationen für die Erstellung des Tickets")
+    print("Dann erstellen Sie bitte ein Ticket und füllen dazu bitte folgende Informationen aus.")
 
     #User-Name Abfrage und Prüfung
     while user_name == "":
@@ -247,7 +263,7 @@ def F_TICKET_INFOS():
             print("Sie haben keine Fehlerbeschreibung eingegeben!")
 
 
-    #F_WRITE_TO_DATABASE(user_name, user_email, user_number, user_availability, user_describtion)
+    F_WRITE_TO_DATABASE(user_name, user_email, user_number, user_availability, user_describtion)
 
     print("Ein Mitarbeiter wird sich so schnell wie möglich um Ihre Anfrage kümmern.")
     print("")
