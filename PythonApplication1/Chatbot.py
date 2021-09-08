@@ -300,7 +300,7 @@ def F_DB_CONNECT():
         global conn
         conn = mariadb.connect(
             user="root",
-            password="root",
+            password="",
             host="127.0.0.1",
             port=3306,
             database="chatbot"
@@ -317,6 +317,7 @@ def F_DB_CONNECT():
 def F_EXIT():
     conn.close()
     print("Wir wünschen Ihnen noch einen schönen Tag.")
+    input("Press Enter to continue")
     sys.exit(1)
 
 
