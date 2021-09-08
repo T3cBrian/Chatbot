@@ -105,11 +105,13 @@ def F_THEMEN_ABFRAGE():
 def F_FIND_SOLUTION():
     print("")
     print("Sie können diesen Bereich jederzeit mit dem Befehl \"!bye\" verlassen oder mit dem Befehl \"!restart\" den Themenbereich neu auswählen.")
+    print("Bitte geben Sie ein Stichwort ein, welches Ihre Frage/ Ihr Problem am besten beschreibt")
+    print("")
 
     user_input_problem = ""
 
     while user_input_problem == "":
-        user_input_problem = input("Bitte geben sie Ihre Frage ein: ")
+        user_input_problem = input("Ihre Frage/ Ihr Problem: ")
 
         if user_input_problem == "!bye":
             F_EXIT()
@@ -123,55 +125,96 @@ def F_FIND_SOLUTION():
             user_input_problem = ""
             continue
 
-        if user_input_themenbereich_nr != "4":
 
-            try:
-                # komisches Verhalten von MariaDB
-                #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? and ProblemKeyword like '%?%' ", (user_input_themenbereich_nr, user_input_problem))
-                #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? ", (user_input_themenbereich_nr, ))
-                #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemKeyword LIKE \"?\" ", (test))
+        try:
+            # komisches Verhalten von MariaDB
+            #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? and ProblemKeyword like '%?%' ", (user_input_themenbereich_nr, user_input_problem))
+            #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? ", (user_input_themenbereich_nr, ))
+            #cur.execute("Select ProblemKeyword, ProblemSolution from problems where ProblemKeyword LIKE \"?\" ", (test))
 
-                # string manipulation => damit wir %-Zeichen in unserem Such String haben
-                user_input_problem_man =  user_input_problem.replace(" ", "%")
-                user_input_problem_man = "%" + user_input_problem_man + "%"
+            # string manipulation => damit wir %-Zeichen in unserem Such String haben
+            user_input_problem_man =  user_input_problem.replace(" ", "%")
+            user_input_problem_man = "%" + user_input_problem_man + "%"
 
-                statement = "Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? and ProblemKeyword LIKE ?"
-                data = (user_input_themenbereich_nr, user_input_problem_man)
-                cur.execute(statement, data)
+            statement = "Select ProblemKeyword, ProblemSolution from problems where ProblemCategoryID=? and ProblemKeyword LIKE ?"
+            data = (user_input_themenbereich_nr, user_input_problem_man)
+            cur.execute(statement, data)
 
 
-            except mariadb.Error as e:
-                print(f"Error: {e}")
-                sys.exit(1)
+        except mariadb.Error as e:
+            print(f"Error: {e}")
+            sys.exit(1)
 
-            for (ProblemKeyword, ProblemSolution) in cur:
-                print("")
-                print(f"Problem-Beschreibung: {ProblemKeyword}")
-                print(f"Problem-Lösung:       {ProblemSolution}")
+        # der checker wird im folgenden benutzt um mehrer Sachen zu testen, zum einen ob wir überhaupt etwas in der DB gefunden haben, später dann wie unsere Antwort war und wie wir weiter machen möchten
+        checker = "initialize"
 
-                checker = "error"
+        for (ProblemKeyword, ProblemSolution) in cur:
+            print("")
+            print(f"Problem-Beschreibung: {ProblemKeyword}")
+            print(f"Problem-Lösung:       {ProblemSolution}")
 
-                while checker == "error":
-                    checker = input("Hat diese Antwort Ihr Problem gelöst? [j/n] ")
+            checker = "error"
 
-                    if checker == "J" or checker == "j":
-                        checker = "break"
-                        break
-                    elif checker == "!bye":
-                        F_EXIT()
-                    elif checker == "!TS":
-                        F_TICKET_SEARCH()
-                        checker = "break"
-                        break
-                    elif checker != "j" and checker != "J" and checker != "n" and checker != "N":
-                        checker = "error"
+            while checker == "error":
+                checker = input("Hat diese Antwort Ihr Problem gelöst? [j/n]: ")
 
-                if checker == "break":
-                    user_input_problem = ""
+                if checker == "J" or checker == "j":
+                    checker = "break"
                     break
+                elif checker == "!bye":
+                    F_EXIT()
+                elif checker == "!TS":
+                    F_TICKET_SEARCH()
+                    checker = "break"
+                    break
+                elif checker != "j" and checker != "J" and checker != "n" and checker != "N":
+                    checker = "error"
 
-        else:
-            print("XXX")
+            if checker == "break":
+                user_input_problem = ""
+                break
+        
+        checker_no_solution = False
+
+        # Wenn der Checker n o. N ist haben wir noch keine Lösung gefunden
+        if checker == "n" or checker == "N":
+            print("")
+            print("Leider hat keiner unserer Vorschläge eine Lösung erziehlt.")
+            checker_no_solution = True
+                
+        #wenn das true ist, dann hatten wir keine Attribute im Objekt "cur"
+        elif checker == "initialize":
+            print("")
+            print("Leider konnten wir keine Problembeschreibung zu Ihrem eingegebenem Stichwort finden.")
+            checker_no_solution = True
+
+        if checker_no_solution == True:
+            print("Bitte probieren Sie es doch mit einem anderen Stichwort oder etwas allgemeiner. -- 1")
+            print("Sie können auch gerne direkt ein Ticket erstellen                               -- 2")
+            print("")
+
+            user_input_no_object = ""
+
+            while user_input_no_object == "":
+
+                user_input_no_object = input("Wie möchten sie fortfahren? [1/2]: ")
+
+                if user_input_no_object == "":
+                    print("Bitte antworten Sie mit 1 oder 2")
+                    continue
+
+                if user_input_no_object == "1":
+                    # wir setzen die Frage zurück und starten somit mit einer neuen Abfrage, da wir immernoch in der while schleife sind
+                    user_input_problem = ""
+                    continue
+                elif user_input_no_object == "2":
+                    # springen direkt in die Function um ein Ticket zu erstellen und danach beenden wir den chatbot
+                    F_TICKET_INFOS()
+                    F_EXIT()
+                else:
+                    user_input_problem = ""
+                    print("Bitte antworten Sie mit 1 oder 2")
+                    continue
 
 
 def F_TICKET_SEARCH():
@@ -204,7 +247,7 @@ def F_TICKET_INFOS():
     user_describtion = ""
     
     print("")  
-    print("Dann erstellen Sie bitte ein Ticket und füllen dazu bitte folgende Informationen aus.")
+    print("Um ein Ticket zu erstellen, füllen Sie bitte folgende Informationen aus.")
 
     #User-Name Abfrage und Prüfung
     while user_name == "":
@@ -300,7 +343,7 @@ def F_DB_CONNECT():
         global conn
         conn = mariadb.connect(
             user="root",
-            password="",
+            password="root",
             host="127.0.0.1",
             port=3306,
             database="chatbot"
@@ -317,7 +360,7 @@ def F_DB_CONNECT():
 def F_EXIT():
     conn.close()
     print("Wir wünschen Ihnen noch einen schönen Tag.")
-    input("Press Enter to continue")
+    input("Press Enter to exit")
     sys.exit(1)
 
 
