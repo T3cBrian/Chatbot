@@ -158,16 +158,18 @@ def F_FIND_SOLUTION():
             while checker == "error":
                 checker = input("Hat diese Antwort Ihr Problem gelöst? [j/n]: ")
 
-                if checker == "J" or checker == "j":
+                checker = checker.lower()
+
+                if checker == "j" or checker == "ja":
                     checker = "break"
                     break
                 elif checker == "!bye":
                     F_EXIT()
-                elif checker == "!TS":
+                elif checker == "!ts":
                     F_TICKET_SEARCH()
                     checker = "break"
                     break
-                elif checker != "j" and checker != "J" and checker != "n" and checker != "N":
+                elif checker != "j" and checker != "ja" and checker != "n" and checker != "nein":
                     checker = "error"
 
             if checker == "break":
@@ -177,7 +179,7 @@ def F_FIND_SOLUTION():
         checker_no_solution = False
 
         # Wenn der Checker n o. N ist haben wir noch keine Lösung gefunden
-        if checker == "n" or checker == "N":
+        if checker == "n" or checker == "nein":
             print("")
             print("Leider hat keiner unserer Vorschläge eine Lösung erziehlt.")
             checker_no_solution = True
@@ -234,9 +236,15 @@ def F_TICKET_SEARCH():
         print(f"Error: {e}")
         sys.exit(1)
         
+    checker_for_tricket = False
+
     for (TicketNumber, TicketStatus) in cur:
         print(f"Ticket-Nummer: {TicketNumber}")
         print(f"Ticket-Status: {TicketStatus}")
+        checker_for_tricket = True
+
+    if checker_for_tricket == False:
+        print("Es gibt leider kein Ticket zu der eingegebenen Ticket-Nummer")
 
 
 def F_TICKET_INFOS():
@@ -343,7 +351,7 @@ def F_DB_CONNECT():
         global conn
         conn = mariadb.connect(
             user="root",
-            password="root",
+            password="",
             host="127.0.0.1",
             port=3306,
             database="chatbot"
